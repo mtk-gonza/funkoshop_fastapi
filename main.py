@@ -3,11 +3,11 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from src.views import auth_view, category_view, product_view, product_specification_view, user_view
-from src.models.database import wait_for_db
-from src.config.seeds.seerder import load_seed_data
+from app.routes import auth_route, category_route, product_route, product_specification_route, user_route
+from app.database.database import wait_for_db
+from app.database.seeds.seerder import load_seed_data
 
-app = FastAPI(title='FunkoShop FastAPI', version='1.0.0')
+app = FastAPI(title='FunkoShop FastAPI', version='1.0.1')
 
 app.mount('/uploads', StaticFiles(directory='uploads'), name='uploads')
 
@@ -19,11 +19,11 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-app.include_router(auth_view.router)
-app.include_router(product_view.router)
-app.include_router(category_view.router)
-app.include_router(product_specification_view.router)
-app.include_router(user_view.router)
+app.include_router(auth_route.router)
+app.include_router(product_route.router)
+app.include_router(category_route.router)
+app.include_router(product_specification_route.router)
+app.include_router(user_route.router)
 
 if __name__ == '__main__': 
     wait_for_db()  
