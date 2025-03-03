@@ -1,4 +1,5 @@
 
+import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -7,9 +8,12 @@ from app.routes import auth_route, category_route, product_route, product_specif
 from app.database.database import wait_for_db
 from app.database.seeds.seerder import load_seed_data
 
+UPLOADS_DIR = "uploads"
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+
 app = FastAPI(title='FunkoShop FastAPI', version='1.0.1')
 
-app.mount('/uploads', StaticFiles(directory='uploads'), name='uploads')
+app.mount('/uploads', StaticFiles(directory=UPLOADS_DIR), name='uploads')
 
 app.add_middleware(
     CORSMiddleware,
