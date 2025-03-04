@@ -62,17 +62,3 @@ def create_access_token(id: int, username: str, roles: list[str], expires_delta:
     encode.update({'exp': expire})
     encoded_jwt = jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
-
-def has_role(required_role: str):
-    def verify_role(user: TokenData = Depends(get_current_user)):
-        roles = user.roles
-        if isinstance(roles, str):
-            if required_role != roles:
-                raise HTTPException(status_code=403, detail='No tiene permisos para acceder a este recurso')
-        elif isinstance(roles, list):
-            if required_role not in roles:
-                raise HTTPException(status_code=403, detail='No tiene permisos para acceder a este recurso')
-        else:
-            raise HTTPException(status_code=403, detail='Rol inválido')
-        return user
-    return verify_role

@@ -5,15 +5,15 @@ from app.schemas.user_schema import UserResponse, UserCreate, UserUpdate, UserDe
 from app.config.dependency import db_dependency, user_dependency
 from app.controllers import user_controller
 from app.database.database import get_db
-from app.auth.jwt_handler import has_role
+from app.auth.role_handler import has_role
 
 router = APIRouter(prefix='/users', tags=['USERS'])
 
-@router.get('/{user_id}', summary='GET User by ID', response_model=UserResponse, dependencies=[Depends(has_role('root'))])
+@router.get('/{user_id}', summary='GET User by ID', response_model=UserResponse, dependencies=[Depends(has_role('role_admin'))])
 def get_user(user_id: int, db: db_dependency, user: user_dependency):
     return user_controller.get_user(user_id, db, user)
 
-@router.get('/', summary='GET ALL Users', response_model=List[UserResponse])
+@router.get('/', summary='GET ALL Users', response_model=List[UserResponse], dependencies=[Depends(has_role('role_admin'))])
 def get_users(db: db_dependency, user: user_dependency, skip: int = 0, limit: int = 100):
     return user_controller.get_users(db, user, skip, limit)
 
@@ -21,10 +21,10 @@ def get_users(db: db_dependency, user: user_dependency, skip: int = 0, limit: in
 def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
     return user_controller.create_user(user_data, db)
 
-@router.put('/{user_id}', summary='UPDATE User by ID', response_model=UserResponse)
+@router.put('/{user_id}', summary='UPDATE User by ID', response_model=UserResponse, dependencies=[Depends(has_role('role_editor'))])
 def update_user(user_id: int, user_data: UserUpdate, db: db_dependency, user: user_dependency):
     return user_controller.update_user(user_id, user_data, db, user)
 
-@router.delete('/{user_id}', summary='DELETE user by ID', response_model=UserDelete)
+@router.delete('/{user_id}', summary='DELETE user by ID', response_model=UserDelete, dependencies=[Depends(has_role('role_root'))])
 def delete_user(user_id: int, db: db_dependency, user: user_dependency):
     return user_controller.delete_user(user_id, db, user)
