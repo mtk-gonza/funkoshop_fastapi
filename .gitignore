@@ -48,7 +48,6 @@ logs/
 # Archivos estáticos generados
 staticfiles/
 mediafiles/
-uploads/
 
 # Node.js (si usas herramientas como Webpack para frontend)
 node_modules/

@@ -1,13 +1,12 @@
 
-import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from app.config.settings import create_dir, UPLOADS_DIR
 from app.routes import auth_route, category_route, product_route, product_specification_route, user_route
 from app.database.database import wait_for_db
 from app.database.seeds.seerder import load_seed_data
-from app.database.seeds.dir_seed import UPLOADS_DIR, create_dir
 
 create_dir()
 

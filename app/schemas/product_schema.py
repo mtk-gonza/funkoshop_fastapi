@@ -14,19 +14,17 @@ class ProductBase(BaseModel):
     sku: str
     dues: Optional[int]
     special: Optional[bool]
-    image_front: Optional[str]
-    image_back: Optional[str]
+    licence_id: Optional[int]
+    category_id: Optional[int]
+    image_front: Optional[str] = None
+    image_back: Optional[str] = None
+    specifications : Optional[List[ProductSpecificationCreate]] = []
 
 class ProductCreate(ProductBase):
-    licence_id: Optional[int]
-    category_id: Optional[int]
-    specifications : Optional[List[ProductSpecificationCreate]] = []
+    pass
 
 class ProductUpdate(ProductBase):
-    licence_id: Optional[int]
-    category_id: Optional[int]
-    specifications : Optional[List[ProductSpecificationCreate]] = []
-
+    pass
 class ProductResponse(ProductBase):
     id: int
     licence: Optional[LicenceResponse]

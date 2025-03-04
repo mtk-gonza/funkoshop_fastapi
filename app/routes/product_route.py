@@ -1,5 +1,7 @@
-from fastapi import APIRouter, status
+import json
+from fastapi import APIRouter, status, UploadFile, Form, HTTPException
 from typing import List
+from pydantic import ValidationError
 from app.schemas.product_schema import ProductResponse, ProductCreate, ProductUpdate, ProductDelete
 from app.config.dependency import db_dependency, user_dependency
 from app.controllers import product_controller
@@ -15,8 +17,15 @@ def get_products(user: user_dependency, db: db_dependency, skip: int = 0, limit:
     return product_controller.get_products(db, user, skip, limit)
 
 @router.post('/', summary='CREATE new Product', response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
-def create_product(product_data: ProductCreate, db: db_dependency, user: user_dependency):
-    return product_controller.create_product(product_data, db, user)
+def create_product(front_image: UploadFile, back_image: UploadFile, db: db_dependency, user: user_dependency, product_data: str = Form(...)):
+    try:
+        product_dict = json.loads(product_data)
+        product_obj = ProductCreate(**product_dict)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=400, detail='Invalid JSON format for product_data')
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail=f'Validation error: {e}')
+    return product_controller.create_product(product_obj, front_image, back_image, db, user)
 
 @router.put('/{product_id}', summary='UPDATE Product by ID', response_model=ProductResponse, status_code=status.HTTP_202_ACCEPTED)
 def update_product(product_id: int, product_data: ProductUpdate, db: db_dependency, user: user_dependency):
