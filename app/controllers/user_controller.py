@@ -17,7 +17,7 @@ def get_user(user_id, db, user):
         logging.error(f'Error reading user: {e}')
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Internal server error.')
 
-def get_users(db, user, skip, limit):
+def get_users(db, user, skip, limit):    
     check_user(user)
     try:
         users = user_service.read_users(db, skip=skip, limit=limit)

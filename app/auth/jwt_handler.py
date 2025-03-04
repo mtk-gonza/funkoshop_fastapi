@@ -32,18 +32,47 @@ def check_user(user):
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        username: str = payload.get('sub')
-        user_id: int = payload.get('id')
-        user_role: str = payload.get('role')
-        check_user(username)
-        token_data = TokenData(id=user_id, username=username, user_role=user_role)
+        id_raw = payload.get('id')
+        username_raw = payload.get('username')
+        roles_raw = payload.get('roles')
+        if id_raw is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='ID no encontrado en el token.')
+        try:
+            id_parsed = int(id_raw)
+        except (ValueError, TypeError):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='ID inválido en el token.')
+        if not isinstance(username_raw, str):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Nombre de usuario inválido en el token.')
+        username_parsed = username_raw
+        if not isinstance(roles_raw, list) or not all(isinstance(role, str) for role in roles_raw):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Roles inválidos en el token.')
+        roles_parsed = roles_raw
+        token_data = TokenData(id=id_parsed, username=username_parsed, roles=roles_parsed)
         return token_data
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='No se pudo validar el usuario.')
     
-def create_access_token(username: str, user_id: int, role: str, expires_delta: timedelta):
-    encode = {'sub': username, 'id': user_id, 'role': role}
+def create_access_token(id: int, username: str, roles: list[str], expires_delta: timedelta):
+    encode = {
+        'id': id, 
+        'username': username, 
+        'roles': roles
+    }
     expire = datetime.utcnow() + expires_delta
     encode.update({'exp': expire})
     encoded_jwt = jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
+
+def has_role(required_role: str):
+    def verify_role(user: TokenData = Depends(get_current_user)):
+        roles = user.roles
+        if isinstance(roles, str):
+            if required_role != roles:
+                raise HTTPException(status_code=403, detail='No tiene permisos para acceder a este recurso')
+        elif isinstance(roles, list):
+            if required_role not in roles:
+                raise HTTPException(status_code=403, detail='No tiene permisos para acceder a este recurso')
+        else:
+            raise HTTPException(status_code=403, detail='Rol inválido')
+        return user
+    return verify_role

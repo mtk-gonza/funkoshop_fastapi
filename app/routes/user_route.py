@@ -5,10 +5,11 @@ from app.schemas.user_schema import UserResponse, UserCreate, UserUpdate, UserDe
 from app.config.dependency import db_dependency, user_dependency
 from app.controllers import user_controller
 from app.database.database import get_db
+from app.auth.jwt_handler import has_role
 
 router = APIRouter(prefix='/users', tags=['USERS'])
 
-@router.get('/{user_id}', summary='GET User by ID', response_model=UserResponse)
+@router.get('/{user_id}', summary='GET User by ID', response_model=UserResponse, dependencies=[Depends(has_role('root'))])
 def get_user(user_id: int, db: db_dependency, user: user_dependency):
     return user_controller.get_user(user_id, db, user)
 

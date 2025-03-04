@@ -1,26 +1,20 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
+from app.schemas.role_schema import RoleResponse
 from app.enums.roles_enum import Roles
 
 class UserBase(BaseModel):
-    email: str
     username: str
+    email: str
+    password: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    password: str
     telefono: Optional[str] = None
     is_active: bool
-    role: Optional[Roles] = None
 
-class UserCreate(BaseModel):
-    username:str
-    email:str
-    first_name:str
-    last_name:str
-    password:str
-    role:str
-
+class UserCreate(UserBase):
+    pass
 class UserUpdate(UserBase):
     pass
 
@@ -32,7 +26,7 @@ class UserResponse(BaseModel):
     last_name: Optional[str] = None
     telefono: Optional[str] = None
     is_active: bool
-    role: Optional[str] = None
+    roles: List[RoleResponse] = []
     createdAt: datetime
     updatedAt: datetime
     class Config:

@@ -1,8 +1,8 @@
 from enum import Enum
 
-class Roles(str, Enum):
-    str.capitalize
-    ROOT = 'Root'
-    ADMIN = 'Admin'
-    USER = 'User'
-    GUEST = 'Guest'
+class Roles(Enum):
+    ROOT = 'root'
+    ADMIN = 'admin'
+    EDITOR = 'editor'
+    USER = 'user'
+    GUEST = 'guest'

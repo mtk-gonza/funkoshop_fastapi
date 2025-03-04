@@ -17,6 +17,7 @@ def get_product(product_id, db, user):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Internal server error.')
     
 def get_products(db, user, skip, limit):
+    print(user)
     check_user(user)
     try:
         products = product_service.read_products(db, skip=skip, limit=limit)

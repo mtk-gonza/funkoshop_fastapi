@@ -1,6 +1,7 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Annotated
+from functools import wraps
 from app.database.database import get_db
 from app.auth.jwt_handler import get_current_user
 

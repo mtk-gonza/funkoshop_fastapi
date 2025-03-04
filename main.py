@@ -7,11 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth_route, category_route, product_route, product_specification_route, user_route
 from app.database.database import wait_for_db
 from app.database.seeds.seerder import load_seed_data
+from app.database.seeds.dir_seed import UPLOADS_DIR, create_dir
 
-UPLOADS_DIR = "uploads"
-os.makedirs(UPLOADS_DIR, exist_ok=True)
+create_dir()
 
-app = FastAPI(title='FunkoShop FastAPI', version='1.0.1')
+app = FastAPI(title='FunkoShop FastAPI', version='1.0.5')
 
 app.mount('/uploads', StaticFiles(directory=UPLOADS_DIR), name='uploads')
 
