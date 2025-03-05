@@ -16,8 +16,7 @@ def get_category(category_id, db, user):
         logging.error(f'Error reading category: {e}')
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Internal server error')
 
-def get_categories(db, user):
-    check_user(user)
+def get_categories(db):
     try:
         categories = category_service.read_categories(db)
         return categories

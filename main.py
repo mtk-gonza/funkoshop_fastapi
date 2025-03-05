@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import create_dir, UPLOADS_DIR
-from app.routes import auth_route, category_route, product_route, product_specification_route, user_route
+from app.routes import auth_route, category_route, product_route, product_specification_route, user_route, licence_route
 from app.database.database import wait_for_db
 from app.database.seeds.seerder import load_seed_data
 
@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(auth_route.router)
 app.include_router(product_route.router)
 app.include_router(category_route.router)
+app.include_router(licence_route.router)
 app.include_router(product_specification_route.router)
 app.include_router(user_route.router)
 

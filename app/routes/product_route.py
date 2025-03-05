@@ -13,11 +13,11 @@ router = APIRouter(prefix='/products', tags=['PRODUCTS'])
 def get_product(product_id: int, db: db_dependency, user: user_dependency):
     return product_controller.get_product(product_id, db, user)
 
-@router.get('/', summary='GET ALL Products', response_model=List[ProductResponse], status_code=status.HTTP_200_OK, dependencies=Depends(has_role('role_user')))
+@router.get('/', summary='GET ALL Products', response_model=List[ProductResponse], status_code=status.HTTP_200_OK, dependencies=[Depends(has_role('role_user'))])
 def get_products(user: user_dependency, db: db_dependency, skip: int = 0, limit: int = 100):
     return product_controller.get_products(db, user, skip, limit)
 
-@router.post('/', summary='CREATE new Product', response_model=ProductResponse, status_code=status.HTTP_201_CREATED, dependencies=Depends(has_role('role_editor')))
+@router.post('/', summary='CREATE new Product', response_model=ProductResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(has_role('role_editor'))])
 def create_product(front_image: UploadFile, back_image: UploadFile, db: db_dependency, user: user_dependency, product_data: str = Form(...)):
     try:
         product_dict = json.loads(product_data)
@@ -28,7 +28,7 @@ def create_product(front_image: UploadFile, back_image: UploadFile, db: db_depen
         raise HTTPException(status_code=400, detail=f'Validation error: {e}')
     return product_controller.create_product(product_obj, front_image, back_image, db, user)
 
-@router.put('/{product_id}', summary='UPDATE Product by ID', response_model=ProductResponse, status_code=status.HTTP_202_ACCEPTED, dependencies=Depends(has_role('role_editor')))
+@router.put('/{product_id}', summary='UPDATE Product by ID', response_model=ProductResponse, status_code=status.HTTP_202_ACCEPTED, dependencies=[Depends(has_role('role_editor'))])
 def update_product(product_id: int, product_data: ProductUpdate, db: db_dependency, user: user_dependency):
     return product_controller.update_product(product_id, product_data, db, user)
 
