@@ -7,13 +7,13 @@ from app.auth.role_handler import has_role
 
 router = APIRouter(prefix='/licences', tags=['LICENCES'])
 
-@router.get('/{licence_id}', summary='GET Licence by ID', response_model=LicenceResponse, dependencies=[Depends(has_role('role_user'))])
-def get_licence(licence_id: int, db: db_dependency, user: user_dependency):
-    return licence_controller.get_licence(licence_id, db, user)
+@router.get('/{licence_id}', summary='GET Licence by ID', response_model=LicenceResponse)
+def get_licence(licence_id: int, db: db_dependency):
+    return licence_controller.get_licence(licence_id, db)
 
-@router.get('/', summary='GET ALL Licences', response_model=List[LicenceResponse], dependencies=[Depends(has_role('role_user'))])
-def get_licences(db: db_dependency, user: user_dependency):
-    return licence_controller.get_licences(db, user)
+@router.get('/', summary='GET ALL Licences', response_model=List[LicenceResponse])
+def get_licences(db: db_dependency):
+    return licence_controller.get_licences(db)
 
 @router.post('/', summary='CREATE new Licence', response_model=LicenceResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(has_role('role_editor'))])
 def create_licence(licence: LicenceCreate, db: db_dependency, user: user_dependency):

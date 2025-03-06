@@ -4,8 +4,7 @@ from app.services import product_service, licence_service, category_service
 from app.auth.jwt_handler import check_user
 from app.schemas.product_schema import ProductCreate
 
-def get_product(product_id, db, user):
-    check_user(user)
+def get_product(product_id, db):
     try:
         db_product = product_service.read_product(db, product_id)
         if db_product is None:
@@ -17,9 +16,7 @@ def get_product(product_id, db, user):
         logging.error(f'Error reading product: {e}')
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Internal server error.')
     
-def get_products(db, user, skip, limit):
-    print(user)
-    check_user(user)
+def get_products(db, skip, limit):
     try:
         products = product_service.read_products(db, skip=skip, limit=limit)
         return products

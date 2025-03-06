@@ -9,13 +9,13 @@ from app.auth.role_handler import has_role
 
 router = APIRouter(prefix='/products', tags=['PRODUCTS'])
 
-@router.get('/{product_id}', summary='GET Product by ID', response_model=ProductResponse, dependencies=[Depends(has_role('role_user'))])
-def get_product(product_id: int, db: db_dependency, user: user_dependency):
-    return product_controller.get_product(product_id, db, user)
+@router.get('/{product_id}', summary='GET Product by ID', response_model=ProductResponse)
+def get_product(product_id: int, db: db_dependency):
+    return product_controller.get_product(product_id, db)
 
-@router.get('/', summary='GET ALL Products', response_model=List[ProductResponse], status_code=status.HTTP_200_OK, dependencies=[Depends(has_role('role_user'))])
-def get_products(user: user_dependency, db: db_dependency, skip: int = 0, limit: int = 100):
-    return product_controller.get_products(db, user, skip, limit)
+@router.get('/', summary='GET ALL Products', response_model=List[ProductResponse], status_code=status.HTTP_200_OK)
+def get_products(db: db_dependency, skip: int = 0, limit: int = 100):
+    return product_controller.get_products(db, skip, limit)
 
 @router.post('/', summary='CREATE new Product', response_model=ProductResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(has_role('role_editor'))])
 def create_product(front_image: UploadFile, back_image: UploadFile, db: db_dependency, user: user_dependency, product_data: str = Form(...)):
