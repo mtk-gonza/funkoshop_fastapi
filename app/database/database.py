@@ -24,8 +24,8 @@ def wait_for_db():
         try:
             connection = engine.connect()
             connection.close()
-            print('Conexión a la base de datos exitosa.')
+            print('Connection to database successful.')
             break
         except OperationalError:
-            print('Esperando que la base de datos esté disponible...')
+            print('Waiting for the database to be available...')
             time.sleep(5)

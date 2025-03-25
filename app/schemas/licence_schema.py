@@ -1,16 +1,17 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
-
+from app.schemas.image_schema import ImageResponse, ImageCreate
 class LicenceBase(BaseModel):
     name: str
     description: Optional[str]
-    image: Optional[str]
+    images: Optional[List[ImageResponse]] = []
 
-class LicenceCreate(LicenceBase):
-    pass
+class LicenceCreate(BaseModel):
+    name: str
+    description: Optional[str]
 
-class LicenceUpdate(BaseModel):
+class LicenceUpdate(LicenceBase):
     pass
 
 class LicenceResponse(LicenceBase):

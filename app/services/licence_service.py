@@ -1,13 +1,24 @@
+import logging
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from app.models.licence_model import Licence
 from app.schemas.licence_schema import LicenceCreate, LicenceUpdate
 
-def create_licence(db:Session, licence:LicenceCreate):
-    db_licence = Licence(**licence.dict())
-    db.add(db_licence)
-    db.commit()
-    db.refresh(db_licence)
-    return db_licence
+def create_licence(db:Session, licence:LicenceCreate):    
+    try:       
+        db_licence = Licence(**licence.dict())
+        db.add(db_licence)
+        db.commit()
+        db.refresh(db_licence)   
+        return db_licence
+    except SQLAlchemyError as e:
+        logging.error(f'Error creating Licence: {e}')
+        db.rollback()
+        raise ValueError('Error creating Licence. Please check the data provided.')
+    except Exception as e:
+        logging.error(f'Unexpected error: {e}')
+        db.rollback()
+        raise ValueError('An unexpected error occurred while creating the Licence.')    
 
 def read_licence(db: Session, licence_id: int):
     return db.query(Licence).filter(Licence.id == licence_id).first()

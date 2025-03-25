@@ -16,8 +16,8 @@ def get_licences(db: db_dependency):
     return licence_controller.get_licences(db)
 
 @router.post('/', summary='CREATE new Licence', response_model=LicenceResponse, status_code=status.HTTP_201_CREATED, dependencies=[Depends(has_role('role_editor'))])
-def create_licence(licence: LicenceCreate, db: db_dependency, user: user_dependency):
-    return licence_controller.create_licence(licence, db, user)
+def create_licence(licence_data: LicenceCreate, db: db_dependency, user: user_dependency):
+    return licence_controller.create_licence(licence_data, db, user)
 
 @router.put('/{licence_id}', summary='UPDATE Licence by ID', response_model=LicenceResponse, dependencies=[Depends(has_role('role_editor'))])
 def update_licence(licence_id: int, licence_data: LicenceUpdate, db: db_dependency, user: user_dependency):

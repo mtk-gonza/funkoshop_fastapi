@@ -13,13 +13,18 @@ class Product(Base):
     sku = Column(String(50), nullable=False, unique=True)
     dues = Column(Integer, default=0)
     special = Column(Boolean, default=False)
-    image_front = Column(String(255), nullable=True)
-    image_back = Column(String(255), nullable=True)
     licence_id = Column(Integer, ForeignKey('licence.id'), nullable=True)
     category_id = Column(Integer, ForeignKey('category.id'), nullable=True)
     createdAt = Column(DateTime, server_default=func.now(), nullable=False)
     updatedAt = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
+    
     licence = relationship('Licence', back_populates='products')
     category = relationship('Category', back_populates='products')
     specifications = relationship('ProductSpecification', back_populates='product')
+    images = relationship(
+        "Image",
+        primaryjoin="and_(Product.id == Image.entity_id, Image.entity_type == 'product')",
+        foreign_keys="[Image.entity_id]",
+        overlaps="licence_images",
+        viewonly=True
+    )
